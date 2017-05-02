@@ -1,0 +1,8 @@
+.square rect {
+  stroke: white;
+  stroke-width: 1px;
+}
+
+.square text {
+  font: 12px sans-serif;
+}

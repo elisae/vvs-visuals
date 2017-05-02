@@ -1,0 +1,27 @@
+{
+  "name": "vvs-visuals",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elisae/vvs-visuals.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elisae/vvs-visuals/issues"
+  },
+  "homepage": "https://github.com/elisae/vvs-visuals#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "node": "0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
