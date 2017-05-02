@@ -1,0 +1,118 @@
+{
+  "0": {
+    "34": "Weil der Stadt"
+  }, 
+  "1": {
+    "27": "Malmsheim", 
+    "23": "Renningen"
+  }, 
+  "2": {
+    "0": "Bietigheim-Bissingen", 
+    "33": "Magstadt", 
+    "66": "Herrenberg", 
+    "16": "Leonberg", 
+    "20": "Rutesheim", 
+    "28": "Renningen S\u00fcd", 
+    "63": "Nufringen"
+  }, 
+  "3": {
+    "0": "Tamm", 
+    "38": "Maichingen Nord", 
+    "42": "Maichingen", 
+    "13": "H\u00f6flingen", 
+    "58": "Ehningen", 
+    "60": "G\u00e4rtringen"
+  }, 
+  "4": {
+    "48": "Sindelfingen", 
+    "9": "Ditzingen", 
+    "55": "Hulb", 
+    "52": "B\u00f6blingen", 
+    "7": "Weilimdorf"
+  }, 
+  "5": {
+    "7": "Korntal", 
+    "49": "Rohr", 
+    "51": "Goldberg", 
+    "1": "Aspberg"
+  }, 
+  "6": {
+    "2": "Ludwigsburg", 
+    "35": "Schwabstra\u00dfe", 
+    "4": "Kornwestheim", 
+    "8": "Neuwirtshaus (Porscheplatz)", 
+    "43": "\u00d6sterfeld", 
+    "46": "Vaihingen", 
+    "40": "Universit\u00e4t", 
+    "54": "Oberaichen", 
+    "57": "Leinfelden", 
+    "61": "Echterdingen"
+  }, 
+  "7": {
+    "64": "Flughafen/Messe", 
+    "1": "Favoritepark", 
+    "67": "Filderstadt", 
+    "8": "Zuffenhausen", 
+    "12": "Feuerbach", 
+    "26": "Stadtmitte", 
+    "31": "Feuersee"
+  }, 
+  "8": {
+    "24": "Hauptbahnhof", 
+    "1": "Freiberg (N)", 
+    "15": "Nordbahnhof"
+  }, 
+  "9": {
+    "1": "Benningen (N)"
+  }, 
+  "10": {
+    "17": "N\u00fcrnberger Stra\u00dfe", 
+    "18": "null", 
+    "19": "Bad Cannstatt", 
+    "22": "Neckarpark", 
+    "1": "Marbach (N)"
+  }, 
+  "11": {
+    "1": "Erdmannhausen", 
+    "36": "Mettingen", 
+    "17": "Sommerrain", 
+    "18": "Fellbach", 
+    "25": "Untert\u00fcrkheim", 
+    "30": "Obert\u00fcrkheim"
+  }, 
+  "12": {
+    "1": "Kirchberg (M)", 
+    "39": "Esslingen (N)", 
+    "44": "Oberesslingen", 
+    "16": "Neustadt-Hohenacker", 
+    "17": "Waiblingen", 
+    "21": "Rommelshausen"
+  }, 
+  "13": {
+    "3": "Burgstall (M)", 
+    "10": "Nellmersbach", 
+    "11": "Winnenden", 
+    "14": "Schwaikheim", 
+    "48": "Zell", 
+    "50": "Altbach", 
+    "53": "Plochingen", 
+    "23": "Stetten-Beinstein", 
+    "25": "Endersbach", 
+    "29": "Beutelsbach"
+  }, 
+  "14": {
+    "32": "Grunbach", 
+    "37": "Geradstetten", 
+    "6": "Maubach", 
+    "41": "Winterbach", 
+    "56": "Wernau (N)", 
+    "59": "Wendlingen (N)", 
+    "5": "Backnang"
+  }, 
+  "15": {
+    "65": "Kirchheim (T)", 
+    "45": "Weiler", 
+    "62": "\u00d6tlingen", 
+    "47": "Schorndorf"
+  }
+}
