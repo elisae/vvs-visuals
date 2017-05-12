@@ -1,53 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-	function max(data) {
-		// data is multidimensional
-		if (Array.isArray(data[0])) {
-			var maximums = []
-			for (var i = 0; i < data.length; i++) {
-				maximums.push(max(data[i]));
-			}
-			return d3.max(maximums);
-		} else {
-			// data is a 1D-array
-			return d3.max(data);
-		}
-	}
-
-	function type(d) {
-		d.value = +d.value; // coerce to number
-		return d;
-	}
-
-	function getSquareSize(colCount, rowCount, totalWidth, totalHeight) {
-		return
-	}
-
-	// transform 2D numeric matrix
-	function transformMatrix(data, squareSize) {
-		var result = new Array();
-		var xpos = 1;
-    var ypos = 1;
-
-		for (var x = 0; x < data.length; x++) {
-			result.push(new Array());
-
-			for (var y = 0; y < data[x].length; y++) {
-				result[x].push({
-					x: xpos,
-					y: ypos,
-					value: data[x][y]
-				})
-				xpos += squareSize;
-			}
-
-			xpos = 1;
-			ypos += squareSize;
-		}
-
-		return result;
-	}
-
 	d3.json("data/sample-matrix.json", function(err, matrix) {
 		if (err) {
 			console.log(err);
@@ -100,3 +52,51 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	});
 });
+
+function max(data) {
+	// data is multidimensional
+	if (Array.isArray(data[0])) {
+		var maximums = []
+		for (var i = 0; i < data.length; i++) {
+			maximums.push(max(data[i]));
+		}
+		return d3.max(maximums);
+	} else {
+		// data is a 1D-array
+		return d3.max(data);
+	}
+}
+
+function type(d) {
+	d.value = +d.value; // coerce to number
+	return d;
+}
+
+function getSquareSize(colCount, rowCount, totalWidth, totalHeight) {
+	return
+}
+
+// transform 2D numeric matrix
+function transformMatrix(data, squareSize) {
+	var result = new Array();
+	var xpos = 1;
+	var ypos = 1;
+
+	for (var x = 0; x < data.length; x++) {
+		result.push(new Array());
+
+		for (var y = 0; y < data[x].length; y++) {
+			result[x].push({
+				x: xpos,
+				y: ypos,
+				value: data[x][y]
+			})
+			xpos += squareSize;
+		}
+
+		xpos = 1;
+		ypos += squareSize;
+	}
+
+	return result;
+}
