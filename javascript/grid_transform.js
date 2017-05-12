@@ -24,10 +24,10 @@ function transformGrid(grid) {
 	var rowCount = d3.max(columnKeysAsInt);
   var colCount = keys.length;
 
-  var width = 350, height = 610;
+  var width = window.innerWidth - 20, height = window.innerHeight - 20;
   var colWidth = width/colCount;
   var rowHeight = height/rowCount;
-  var squareSize = Math.min(Math.floor(colWidth), Math.floor(rowHeight));
+  var squareSize = Math.floor(Math.min(colWidth, rowHeight));
 
   var svgGrid = d3.select(".grid")
     .attr("width", width)
@@ -35,7 +35,6 @@ function transformGrid(grid) {
 
 	for (var x = 0; x < colCount; x++) {
 		var column = new Array();
-    var svgColumn = svgGrid.append("g").attr("class", "col");
 
 		for (var y = 0; y < rowCount; y++) {
 			var colKey = String(x); // TODO: should be same as grid[keys[x]];
@@ -44,12 +43,25 @@ function transformGrid(grid) {
 			if (station) {
         var xpos = x * squareSize;
         var ypos = y * squareSize;
-        svgColumn.append("rect")
+        var g = svgGrid.append("g")
           .attr("class", "square")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("transform", "translate(" + xpos + ", " + ypos + ")")
+          .on('mouseover', function() {
+            this.parentElement.appendChild(this);
+            this.classList.add("hovered");
+          })
+          .on('mouseout', function() {
+            this.classList.remove("hovered");
+          });
+        g.append("rect")
           .attr("width", squareSize)
-			    .attr("height", squareSize)
-					.attr("fill", "steelblue")
-          .attr("transform", "translate(" + xpos + ", " + ypos + ")");
+			    .attr("height", squareSize);
+        g.append("text")
+          .attr("text-anchor", "middle")
+          .attr("y", "-" + squareSize/2)
+          .text(station);
 
 				column.push(station);
 			} else {
