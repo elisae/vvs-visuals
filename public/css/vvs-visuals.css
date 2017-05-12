@@ -1,8 +1,26 @@
+.grid {
+  padding-left: 50px;
+  padding-top: 20px;
+}
+
 .square rect {
   stroke: white;
   stroke-width: 1px;
+  fill: lightblue;
 }
 
 .square text {
+  display: none;
   font: 12px sans-serif;
+  color: red;
+}
+
+.square.hovered text {
+  display: block;
+  pointer-events: none;
+  fill: darkblue;
+}
+
+.square.hovered rect {
+  fill: darkblue;
 }
