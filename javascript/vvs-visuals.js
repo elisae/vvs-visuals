@@ -11,8 +11,7 @@ function render(error, pixel2station, coordinates, lines) {
     console.log(error);
   } else {
     var data = mergeData(pixel2station, coordinates.relative, lines);
-    var width = window.innerWidth - 20, height = window.innerHeight - 20;
-    draw(width, height, data);
+    draw(window.innerWidth - 20, window.innerHeight - 20, data);
   }
 }
 
@@ -22,20 +21,22 @@ function mergeData(pixel2station, coordinates, lines) {
     var entry = pixel2station[k1];
     Object.keys(entry).forEach(function(k2) {
       var stationName = entry[k2];
-      var stationLines = lines[stationName].lines;
-      var delays = new Array();
-      stationLines.forEach(function(line) {
-        // TODO: retrieve from matrix
-        delays.push({line: line, delay: (Math.random().toFixed(1)) * 10});
-      })
-      result.push({
-        "label": stationName,
-        "matrix_x": parseInt(k1), // 0-15
-        "matrix_y": parseInt(k2), // 0-86
-        "rel_x": Math.round(coordinates[stationName]["x"] * 100) / 100, // 0-1
-        "rel_y": Math.round(coordinates[stationName]["y"] * 100) / 100, // 0-1
-        "delays": delays
-      });
+      if (lines[stationName]) {
+        var stationLines = lines[stationName].lines;
+        var delays = new Array();
+        stationLines.forEach(function(line) {
+          // TODO: retrieve from matrix
+          delays.push({line: line, delay: (Math.random().toFixed(1)) * 10});
+        })
+        result.push({
+          "label": stationName,
+          "matrix_x": parseInt(k1), // 0-15
+          "matrix_y": parseInt(k2), // 0-86
+          "rel_x": Math.round(coordinates[stationName]["x"] * 100) / 100, // 0-1
+          "rel_y": Math.round(coordinates[stationName]["y"] * 100) / 100, // 0-1
+          "delays": delays
+        });
+      }
     });
   });
   return result;
@@ -51,18 +52,13 @@ function draw(width, height, data) {
     "S6": "#875300",
     "S60": "#969200"
   }
-
   var squareSize = 10;
   var overlap = 3/4;
   var maxBarHeight = 25;
   var sWidth = function(barCount) {
     return barCount * overlap * squareSize;
   }
-
-  var color_scale = d3.scaleLinear()
-    .domain([0, 10])
-    .range([d3.rgb(255, 255, 255), d3.rgb(255, 0, 0)]);
-  var height_scale = d3.scaleLinear()
+  var heightScale = d3.scaleLinear()
     .domain([0, 10])
     .range([1, maxBarHeight]);
 
@@ -122,7 +118,7 @@ function draw(width, height, data) {
           .style("display", "none");
       })
       .attr("width", squareSize)
-      .attr("height", function(d) { return height_scale(d.delay); })
+      .attr("height", function(d) { return heightScale(d.delay); })
       .attr("fill", function(d) { return colors[d.line]; })
       .attr("transform", function(d, i) {
         return "translate(" + (i * overlap * squareSize) + ", 0)";
