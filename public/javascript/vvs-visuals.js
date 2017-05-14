@@ -1,102 +1,143 @@
-document.addEventListener("DOMContentLoaded", function(){
-
-	d3.json("data/sample-matrix.json", function(err, matrix) {
-		if (err) {
-			console.log(err);
-		} else {
-			var width = 800, height = 350;
-			var data = matrix.S2
-			var squareSize = Math.min(Math.floor(width/data[0].length), // rowCount
-																Math.floor(height/data.length));  // colCount
-			var grid = transformMatrix(data, squareSize);
-
-			var color_scale = d3.scaleLinear()
-				.domain([0, max([matrix.S1, matrix.S2])])
-				.range([d3.rgb(255, 255, 255), d3.rgb(255, 0, 0)]);
-
-			var row = d3.select(".grid")
-				.attr("width", width)
-				.attr("height", height)
-				.selectAll(".row")
-		    .data(grid)
-		    .enter().append("g")
-		    	.attr("class", "row");
-
-			var column = row.selectAll(".square")
-		    .data(function(d) { return d; })
-		    .enter().append("g")
-					.attr("class", "square")
-					.attr("transform", function(d) {
-						return "translate(" + d.x + ", " + d.y + ")";
-					})
-
-			column.append("rect")
-			    .attr("width", squareSize)
-			    .attr("height", squareSize)
-					.attr("fill", function(d) {
-						return color_scale(d.value);
-					})
-			column.append("text")
-			    .attr("x", squareSize/2)
-			    .attr("y", squareSize/2)
-					.attr("text-anchor", "middle")
-					.attr("alignment-baseline", "central")
-					.attr("fill", function(d) {
-						if (d.value == 0) {
-							return "lightgrey";
-						} else {
-							return "white";
-						}
-					})
-					.text(function(d) { return d.value; });
-		}
-	});
+document.addEventListener("DOMContentLoaded", function() {
+  d3.queue()
+    .defer(d3.json, "../data/pixel2station.json")
+    .defer(d3.json, "../data/coordinates.json")
+    .defer(d3.json, "../data/lines.json")
+    .await(render);
 });
 
-function max(data) {
-	// data is multidimensional
-	if (Array.isArray(data[0])) {
-		var maximums = []
-		for (var i = 0; i < data.length; i++) {
-			maximums.push(max(data[i]));
-		}
-		return d3.max(maximums);
-	} else {
-		// data is a 1D-array
-		return d3.max(data);
-	}
+function render(error, pixel2station, coordinates, lines) {
+  if (error) {
+    console.log(error);
+  } else {
+    var data = mergeData(pixel2station, coordinates.relative, lines);
+    var width = window.innerWidth - 20, height = window.innerHeight - 20;
+    draw(width, height, data);
+  }
 }
 
-function type(d) {
-	d.value = +d.value; // coerce to number
-	return d;
+function mergeData(pixel2station, coordinates, lines) {
+  var result = new Array();
+  Object.keys(pixel2station).forEach(function(k1) {
+    var entry = pixel2station[k1];
+    Object.keys(entry).forEach(function(k2) {
+      var stationName = entry[k2];
+      var stationLines = lines[stationName].lines;
+      var delays = new Array();
+      stationLines.forEach(function(line) {
+        // TODO: retrieve from matrix
+        delays.push({line: line, delay: (Math.random().toFixed(1)) * 10});
+      })
+      result.push({
+        "label": stationName,
+        "matrix_x": parseInt(k1), // 0-15
+        "matrix_y": parseInt(k2), // 0-86
+        "rel_x": Math.round(coordinates[stationName]["x"] * 100) / 100, // 0-1
+        "rel_y": Math.round(coordinates[stationName]["y"] * 100) / 100, // 0-1
+        "delays": delays
+      });
+    });
+  });
+  return result;
 }
 
-function getSquareSize(colCount, rowCount, totalWidth, totalHeight) {
-	return
-}
+function draw(width, height, data) {
+  var colors = {
+    "S1": "#60a92c",
+    "S2": "#e3051b",
+    "S3": "#ef7d00",
+    "S4": "#005da9",
+    "S5": "#009ed4",
+    "S6": "#875300",
+    "S60": "#969200"
+  }
 
-// transform 2D numeric matrix
-function transformMatrix(data, squareSize) {
-	var result = new Array();
-	var xpos = 1;
-	var ypos = 1;
+  var squareSize = 10;
+  var overlap = 3/4;
+  var maxBarHeight = 25;
+  var sWidth = function(barCount) {
+    return barCount * overlap * squareSize;
+  }
 
-	for (var x = 0; x < data.length; x++) {
-		result.push(new Array());
+  var color_scale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([d3.rgb(255, 255, 255), d3.rgb(255, 0, 0)]);
+  var height_scale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([1, maxBarHeight]);
 
-		for (var y = 0; y < data[x].length; y++) {
-			result[x].push({
-				x: xpos,
-				y: ypos,
-				value: data[x][y]
-			})
-			xpos += squareSize;
-		}
+  var canvas = d3.select(".canvas")
+    .attr("width", width)
+    .attr("height", height);
 
-		xpos = 1;
-		ypos += squareSize;
-	}
+  var station = canvas.selectAll("g")
+    .data(data)
+    .enter()
+      .append("g")
+        .attr("class", "station")
+        .attr("x", function(d) { return d.matrix_x; })
+        .attr("y", function(d) { return d.matrix_y; })
+        .attr("transform", function(d) {
+          var xpos = d.rel_x * width - 10;
+          var ypos = d.rel_y * height - 10;
+          return "translate(" + xpos + ", " + ypos + ")";
+        })
+        .on('mouseover', function() {
+          this.parentElement.appendChild(this);
+          this.classList.add("hovered");
+        })
+        .on('mouseout', function() {
+          this.classList.remove("hovered");
+        });
 
-	return result;
+  station.append("g").selectAll("text")
+    .data(function(d) { return d.delays })
+    .enter()
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", function() {
+        return sWidth(d3.select(this.parentNode).datum().delays.length)/2;
+      })
+      .attr("y", maxBarHeight + 10)
+      .attr("class", function(d) { return "hidden line-info " + d.line; })
+      .text(function(d) {
+        return d.line + ": ø " + d.delay + "min delay";
+      })
+
+  station.append("g").selectAll("rect")
+    .data(function(d) { return d.delays })
+    .enter()
+      .insert("rect", ":first-child")
+      .attr("class", "bar")
+      .attr("line", function(d) { return d.line; })
+      .on('mouseover', function(d) {
+        this.parentElement.appendChild(this);
+        d3.select(this.parentElement.parentElement)
+          .selectAll(".line-info." + d.line)
+          .style("display", "block");
+      })
+      .on('mouseout', function(d) {
+        d3.select(this.parentElement.parentElement)
+          .selectAll(".line-info." + d.line)
+          .style("display", "none");
+      })
+      .attr("width", squareSize)
+      .attr("height", function(d) { return height_scale(d.delay); })
+      .attr("fill", function(d) { return colors[d.line]; })
+      .attr("transform", function(d, i) {
+        return "translate(" + (i * overlap * squareSize) + ", 0)";
+      });
+
+  station.append("line")
+    .attr("x1", -3)
+    .attr("y1", 0)
+    .attr("x2", function(d) { return sWidth(d.delays.length) + 6; })
+    .attr("y2", 0);
+
+  station.append("text")
+    .attr("class", "station-name")
+    .attr("text-anchor", "middle")
+    .attr("x", function(d) { return sWidth(d.delays.length)/2; })
+    .attr("y", "-" + squareSize)
+    .text(function(d) { return d.label; });
 }

@@ -1,26 +1,30 @@
-.grid {
-  padding-left: 50px;
-  padding-top: 20px;
+.line-info {
+  font: 11px sans-serif;
 }
 
-.square rect {
-  stroke: white;
-  stroke-width: 1px;
-  fill: lightblue;
+.station-name {
+  font: 13px sans-serif;
 }
 
-.square text {
+.station-name, .line-info {
   display: none;
-  font: 12px sans-serif;
-  color: red;
+  fill: #4f4f4f;
 }
 
-.square.hovered text {
+.station line {
+  stroke-width: 1px;
+  stroke: #6f6f6f;
+}
+
+.station {
+  opacity: 0.5;
+}
+
+.station.hovered {
+  opacity: 1;
+}
+
+.station.hovered .station-name {
   display: block;
   pointer-events: none;
-  fill: darkblue;
-}
-
-.square.hovered rect {
-  fill: darkblue;
 }
