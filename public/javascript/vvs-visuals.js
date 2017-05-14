@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   d3.queue()
-    .defer(d3.json, "../data/pixel2station.json")
-    .defer(d3.json, "../data/coordinates.json")
-    .defer(d3.json, "../data/lines.json")
+    .defer(d3.json, "data/pixel2station.json")
+    .defer(d3.json, "data/coordinates.json")
+    .defer(d3.json, "data/lines.json")
     .await(render);
 });
 
