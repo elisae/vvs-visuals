@@ -1,8 +1,11 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+var cfenv = require('cfenv');
 
-app.use(express.static('public'))
+app.use(express.static(__dirname + '/public'));
 
-app.listen(8080, function () {
-  console.log('Server listening on port 8080')
-})
+var appEnv = cfenv.getAppEnv();
+
+app.listen(appEnv.port, '0.0.0.0', function() {
+  console.log("Server listening on " + appEnv.url);
+});

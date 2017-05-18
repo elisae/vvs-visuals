@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/elisae/vvs-visuals#readme",
   "dependencies": {
     "express": "^4.15.2",
-    "node": "0.0.0"
-  },
-  "devDependencies": {}
+    "node": "0.0.0",
+		"cfenv": "1.0.x"
+  }
 }
