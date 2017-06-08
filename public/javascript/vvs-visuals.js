@@ -1,21 +1,60 @@
 document.addEventListener("DOMContentLoaded", function() {
   d3.queue()
+    .defer(d3.json, "data/sample_api_result_v1.json")
+    .defer(d3.json, "data/stationlabels.json")
     .defer(d3.json, "data/pixel2station.json")
     .defer(d3.json, "data/coordinates.json")
     .defer(d3.json, "data/lines.json")
     .await(render);
 });
 
-function render(error, pixel2station, coordinates, lines) {
+function getDelayArrays(data, stationlabels) {
+  var result = {};
+  data.forEach(function(doc) {
+    doc.data.forEach(function(d) {
+      var label = stationlabels[d.station];
+      if (!result[label]) {
+        result[label] = {};
+      }
+      d.departures.forEach(function(dept) {
+        var delayArr = new Array();
+        var line = dept.line;
+        if (!result[label][line]) {
+          result[label][line] = new Array();
+        }
+        dept.trains.forEach(function(train) {
+          delayArr.push(train.delay);
+        });
+        result[label][line] = result[label][line].concat(delayArr);
+      });
+    });
+  });
+  return result;
+}
+
+function getAverage(array) {
+  if (array.length == 0) {
+    return 0;
+  }
+  var sum = 0;
+  for (var i = 0; i < array.length; i++) {
+    sum += parseInt(array[i], 10);
+  }
+  return Math.round((sum/array.length) * 10) / 10;
+}
+
+function render(error, apidata, stationlabels, pixel2station, coordinates, lines) {
   if (error) {
     console.log(error);
   } else {
-    var data = mergeData(pixel2station, coordinates.relative, lines);
+    var delayArrays = getDelayArrays(apidata.docs, stationlabels);
+    var data = mergeData(pixel2station, coordinates.relative, lines, delayArrays);
     draw(window.innerWidth - 20, window.innerHeight - 20, data);
   }
 }
 
-function mergeData(pixel2station, coordinates, lines) {
+function mergeData(pixel2station, coordinates, lines, delayArrays) {
+  console.log(delayArrays);
   var result = new Array();
   Object.keys(pixel2station).forEach(function(k1) {
     var entry = pixel2station[k1];
@@ -26,7 +65,12 @@ function mergeData(pixel2station, coordinates, lines) {
         var delays = new Array();
         stationLines.forEach(function(line) {
           // TODO: retrieve from matrix
-          delays.push({line: line, delay: (Math.random().toFixed(1)) * 10});
+          if (delayArrays[stationName] && delayArrays[stationName][line]) {
+            var avgDelay = getAverage(delayArrays[stationName][line]);
+            delays.push({line: line, delay: avgDelay});
+          } else {
+            console.log("No entry for line " + line + " at '" + stationName + "'");
+          }
         })
         result.push({
           "label": stationName,
