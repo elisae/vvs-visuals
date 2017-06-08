@@ -1,12 +1,33 @@
 document.addEventListener("DOMContentLoaded", function() {
+
+  var startTime = 1495368000000;
+  var endTime = 1495371600000;
+
+  update();
+});
+
+function updateSVG(startTime, endTime) {
+  console.log("updateSVG("+startTime+", "+endTime+")");
   d3.queue()
-    .defer(d3.json, "data/sample_api_result_v1.json")
+    .defer(d3.json, "https://vvs-delay-api.eu-de.mybluemix.net/db/entries?startTime=" + startTime + "&endTime=" + endTime + "&transform=true")
     .defer(d3.json, "data/stationlabels.json")
     .defer(d3.json, "data/pixel2station.json")
     .defer(d3.json, "data/coordinates.json")
     .defer(d3.json, "data/lines.json")
     .await(render);
-});
+}
+
+function render(error, apidata, stationlabels, pixel2station, coordinates, lines) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Apidata: ");
+    console.log(apidata);
+    var delayArrays = getDelayArrays(apidata.docs, stationlabels);
+    var data = mergeData(pixel2station, coordinates.relative, lines, delayArrays);
+    draw(window.innerWidth - 20, window.innerHeight - 20, data);
+  }
+}
 
 function getDelayArrays(data, stationlabels) {
   var result = {};
@@ -43,16 +64,6 @@ function getAverage(array) {
   return Math.round((sum/array.length) * 10) / 10;
 }
 
-function render(error, apidata, stationlabels, pixel2station, coordinates, lines) {
-  if (error) {
-    console.log(error);
-  } else {
-    var delayArrays = getDelayArrays(apidata.docs, stationlabels);
-    var data = mergeData(pixel2station, coordinates.relative, lines, delayArrays);
-    draw(window.innerWidth - 20, window.innerHeight - 20, data);
-  }
-}
-
 function mergeData(pixel2station, coordinates, lines, delayArrays) {
   console.log(delayArrays);
   var result = new Array();
@@ -69,7 +80,7 @@ function mergeData(pixel2station, coordinates, lines, delayArrays) {
             var avgDelay = getAverage(delayArrays[stationName][line]);
             delays.push({line: line, delay: avgDelay});
           } else {
-            console.log("No entry for line " + line + " at '" + stationName + "'");
+          //  console.log("No data for line " + line + " at '" + stationName + "'");
           }
         })
         result.push({
@@ -87,6 +98,7 @@ function mergeData(pixel2station, coordinates, lines, delayArrays) {
 }
 
 function draw(width, height, data) {
+  console.log("Drawing");
   var colors = {
     "S1": "#60a92c",
     "S2": "#e3051b",
@@ -104,11 +116,13 @@ function draw(width, height, data) {
   }
   var heightScale = d3.scaleLinear()
     .domain([0, 10])
-    .range([1, maxBarHeight]);
+    .range([2, maxBarHeight]);
 
   var canvas = d3.select(".canvas")
     .attr("width", width)
     .attr("height", height);
+
+  canvas.selectAll("g").remove(); // clear old. no way around this^^
 
   var station = canvas.selectAll("g")
     .data(data)
@@ -130,9 +144,17 @@ function draw(width, height, data) {
           this.classList.remove("hovered");
         });
 
-  station.append("g").selectAll("text")
-    .data(function(d) { return d.delays })
-    .enter()
+  station.each(function(d) {
+    console.log(d);
+    var group = d3.select(this);
+
+    var text = group.append("g")
+      .attr("name", "texts")
+      .selectAll("text")
+      .data(d.delays);
+    text.exit()
+      .remove();
+    text.enter()
       .append("text")
       .attr("text-anchor", "middle")
       .attr("x", function() {
@@ -142,11 +164,15 @@ function draw(width, height, data) {
       .attr("class", function(d) { return "hidden line-info " + d.line; })
       .text(function(d) {
         return d.line + ": ø " + d.delay + "min delay";
-      })
+      });
 
-  station.append("g").selectAll("rect")
-    .data(function(d) { return d.delays })
-    .enter()
+    var rect = group.append("g")
+      .attr("name", "rects")
+      .selectAll("rect")
+      .data(d.delays);
+    rect.exit()
+      .remove();
+    rect.enter()
       .insert("rect", ":first-child")
       .attr("class", "bar")
       .attr("line", function(d) { return d.line; })
@@ -168,16 +194,17 @@ function draw(width, height, data) {
         return "translate(" + (i * overlap * squareSize) + ", 0)";
       });
 
-  station.append("line")
-    .attr("x1", -3)
-    .attr("y1", 0)
-    .attr("x2", function(d) { return sWidth(d.delays.length) + 6; })
-    .attr("y2", 0);
+    group.append("line")
+      .attr("x1", -3)
+      .attr("y1", 0)
+      .attr("x2", function(d) { return sWidth(d.delays.length) + 6; })
+      .attr("y2", 0);
 
-  station.append("text")
-    .attr("class", "station-name")
-    .attr("text-anchor", "middle")
-    .attr("x", function(d) { return sWidth(d.delays.length)/2; })
-    .attr("y", "-" + squareSize)
-    .text(function(d) { return d.label; });
+    group.append("text")
+      .attr("class", "station-name")
+      .attr("text-anchor", "middle")
+      .attr("x", function(d) { return sWidth(d.delays.length)/2; })
+      .attr("y", "-" + squareSize)
+      .text(function(d) { return d.label; });
+  })
 }
