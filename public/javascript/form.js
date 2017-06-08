@@ -11,7 +11,6 @@ function toTimestamp(dateString, hourString) {
 }
 
 function update() {
-  console.log("update()");
   var startTime = toTimestamp(
     document.getElementById("startDateField").value,
     document.getElementById("startHoursField").value);
