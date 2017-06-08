@@ -1,13 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-
-  var startTime = 1495368000000;
-  var endTime = 1495371600000;
-
   update();
 });
 
 function updateSVG(startTime, endTime) {
-  console.log("updateSVG("+startTime+", "+endTime+")");
   d3.queue()
     .defer(d3.json, "https://vvs-delay-api.eu-de.mybluemix.net/db/entries?startTime=" + startTime + "&endTime=" + endTime + "&transform=true")
     .defer(d3.json, "data/stationlabels.json")
@@ -21,8 +16,6 @@ function render(error, apidata, stationlabels, pixel2station, coordinates, lines
   if (error) {
     console.log(error);
   } else {
-    console.log("Apidata: ");
-    console.log(apidata);
     var delayArrays = getDelayArrays(apidata.docs, stationlabels);
     var data = mergeData(pixel2station, coordinates.relative, lines, delayArrays);
     draw(window.innerWidth - 20, window.innerHeight - 20, data);
@@ -145,7 +138,6 @@ function draw(width, height, data) {
         });
 
   station.each(function(d) {
-    console.log(d);
     var group = d3.select(this);
 
     var text = group.append("g")
