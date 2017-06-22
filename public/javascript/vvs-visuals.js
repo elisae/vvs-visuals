@@ -1,3 +1,40 @@
+var width = window.innerWidth - 20;
+var height = window.innerHeight - 20;
+var relativeCoordinates = {};
+
+var x = function(stationLabel) {
+  var data = relativeCoordinates[stationLabel]
+  if (!data) {
+    console.log("No coordinates found for " + stationLabel);
+    return 0;
+  }
+  var rel_x = Math.round(data["x"] * 100) / 100; // 0-1
+  return rel_x * width - 10;
+}
+
+var y = function(stationLabel) {
+  var data = relativeCoordinates[stationLabel]
+  if (!data) {
+    console.log("No coordinates found for " + stationLabel);
+    return 0;
+  }
+  var rel_y = Math.round(data["y"] * 100) / 100; // 0-1
+  return rel_y * height - 10;
+}
+
+var color = function(line) {
+  var colors = {
+    "S1": "#60a92c",
+    "S2": "#e3051b",
+    "S3": "#ef7d00",
+    "S4": "#005da9",
+    "S5": "#009ed4",
+    "S6": "#875300",
+    "S60": "#969200"
+  };
+  return colors[line];
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   update();
 });
@@ -17,9 +54,16 @@ function render(error, apidata, stationlabels, pixel2station, coordinates, lines
   if (error) {
     console.log(error);
   } else {
+    relativeCoordinates = coordinates.relative;
     var delayArrays = getDelayArrays(apidata.docs, stationlabels);
-    var data = mergeData(pixel2station, coordinates.relative, lines, delayArrays);
-    draw(window.innerWidth - 20, window.innerHeight - 20, data);
+    var data = mergeData(pixel2station, lines.stationLines, delayArrays);
+
+    d3.select(".canvas")
+      .attr("width", width)
+      .attr("height", height);
+
+    // drawMap(width, height, lines.cornerpoints);
+    draw(width, height, data);
   }
 }
 
@@ -58,7 +102,7 @@ function getAverage(array) {
   return Math.round((sum/array.length) * 10) / 10;
 }
 
-function mergeData(pixel2station, coordinates, lines, delayArrays) {
+function mergeData(pixel2station, lines, delayArrays) {
   console.log(delayArrays);
   var result = new Array();
   Object.keys(pixel2station).forEach(function(k1) {
@@ -81,8 +125,6 @@ function mergeData(pixel2station, coordinates, lines, delayArrays) {
           "label": stationName,
           "matrix_x": parseInt(k1), // 0-15
           "matrix_y": parseInt(k2), // 0-86
-          "rel_x": Math.round(coordinates[stationName]["x"] * 100) / 100, // 0-1
-          "rel_y": Math.round(coordinates[stationName]["y"] * 100) / 100, // 0-1
           "delays": delays
         });
       }
@@ -92,15 +134,6 @@ function mergeData(pixel2station, coordinates, lines, delayArrays) {
 }
 
 function draw(width, height, data) {
-  var colors = {
-    "S1": "#60a92c",
-    "S2": "#e3051b",
-    "S3": "#ef7d00",
-    "S4": "#005da9",
-    "S5": "#009ed4",
-    "S6": "#875300",
-    "S60": "#969200"
-  }
   var squareSize = 10;
   var overlap = 3/4;
   var maxBarHeight = 25;
@@ -111,10 +144,7 @@ function draw(width, height, data) {
     .domain([0, 10])
     .range([2, maxBarHeight]);
 
-  var canvas = d3.select(".canvas")
-    .attr("width", width)
-    .attr("height", height);
-
+  var canvas = d3.select(".delays");
   canvas.selectAll("g").remove(); // clear old. no way around this^^
 
   var station = canvas.selectAll("g")
@@ -125,9 +155,7 @@ function draw(width, height, data) {
         .attr("x", function(d) { return d.matrix_x; })
         .attr("y", function(d) { return d.matrix_y; })
         .attr("transform", function(d) {
-          var xpos = d.rel_x * width - 10;
-          var ypos = d.rel_y * height - 10;
-          return "translate(" + xpos + ", " + ypos + ")";
+          return "translate(" + x(d.label) + ", " + y(d.label) + ")";
         })
         .on('mouseover', function() {
           this.parentElement.appendChild(this);
@@ -181,7 +209,7 @@ function draw(width, height, data) {
       })
       .attr("width", squareSize)
       .attr("height", function(d) { return heightScale(d.delay); })
-      .attr("fill", function(d) { return colors[d.line]; })
+      .attr("fill", function(d) { return color(d.line); })
       .attr("transform", function(d, i) {
         return "translate(" + (i * overlap * squareSize) + ", 0)";
       });
@@ -199,4 +227,23 @@ function draw(width, height, data) {
       .attr("y", "-" + squareSize)
       .text(function(d) { return d.label; });
   })
+}
+
+function drawMap(width, height, cornerpoints) {
+  var canvas = d3.select(".map")
+    .attr("width", width)
+    .attr("height", height);
+
+  var line = d3.line()
+      .x(x)
+      .y(y);
+
+  canvas.selectAll("path")
+    .data(cornerpoints)
+    .enter()
+      .append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.points); })
+      .attr("fill", "none")
+      .attr("stroke", function(d) { return color(d.line); });
 }
