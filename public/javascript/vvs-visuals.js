@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function updateSVG(startTime, endTime) {
+  console.log("Requesting data from " + startTime + " until " + endTime);
   d3.queue()
     .defer(d3.json, "https://vvs-delay-api.eu-de.mybluemix.net/db/entries?startTime=" + startTime + "&endTime=" + endTime + "&transform=true")
     .defer(d3.json, "data/stationlabels.json")
@@ -91,7 +92,6 @@ function mergeData(pixel2station, coordinates, lines, delayArrays) {
 }
 
 function draw(width, height, data) {
-  console.log("Drawing");
   var colors = {
     "S1": "#60a92c",
     "S2": "#e3051b",
