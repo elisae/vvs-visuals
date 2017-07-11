@@ -7,22 +7,17 @@
 }
 
 .station-name, .line-info {
-  display: none;
+  /*display: none;*/
   fill: #4f4f4f;
 }
 
-.station line {
-  stroke-width: 1px;
-  stroke: #6f6f6f;
-}
-
-.station {
+/*.station {
   opacity: 0.5;
 }
 
 .station.hovered {
   opacity: 1;
-}
+}*/
 
 .station.hovered .station-name {
   display: block;

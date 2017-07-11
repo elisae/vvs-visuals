@@ -1,0 +1,53 @@
+[
+  {
+    "line": "S4",
+    "points": [
+      "Marbach (N)_S4",
+      "S4_corner_1",
+      "S4_corner_2",
+      "Schwabstraße_S4"
+    ]
+  },
+  {
+    "line": "S5",
+    "points": [
+      "Bietigheim-Bissingen_S5",
+      "S5_corner_1",
+      "Schwabstraße_S5"
+    ]
+  },
+  {
+    "line": "S6",
+    "points": [
+      "Weil der Stadt_S6",
+      "S6_corner_1",
+      "S6_corner_2",
+      "Schwabstraße_S6"
+    ]
+  },
+  {
+    "line": "S1",
+    "points": [
+      "Herrenberg_S1",
+      "S1_corner_1",
+      "Kirchheim (T)_S1"
+    ]
+  },
+  {
+    "line": "S3",
+    "points": [
+      "Flughafen/Messe_S3",
+      "S3_corner_1",
+      "Backnang_S3"
+    ]
+  },
+  {
+    "line": "S2",
+    "points": [
+      "Schorndorf_S2",
+      "S2_corner_1",
+      "S2_corner_2",
+      "Filderstadt_S2"
+    ]
+  }
+]
