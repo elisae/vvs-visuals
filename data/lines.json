@@ -1,46 +1,4 @@
 {
-  "cornerpoints": [
-    {
-      "line": "S1",
-      "points": [
-        "Herrenberg",
-        "B\u00f6blingen",
-        "Rohr",
-        "Bad Cannstatt",
-        "Kirchheim (T)"
-      ]
-    }, {
-      "line": "S2",
-      "points": [
-
-      ]
-    }, {
-      "line": "S3",
-      "points": [
-
-      ]
-    }, {
-      "line": "S4",
-      "points": [
-
-      ]
-    }, {
-      "line": "S5",
-      "points": [
-
-      ]
-    }, {
-      "line": "S6",
-      "points": [
-
-      ]
-    }, {
-      "line": "S60",
-      "points": [
-
-      ]
-    }
-  ],
   "stationLines": {
     "Weil der Stadt": {
       "lines": [
@@ -75,7 +33,7 @@
         "S60"
       ]
     },
-    "Renningen S\u00fcd": {
+    "Renningen Süd": {
       "lines": [
         "S60"
       ]
@@ -100,7 +58,7 @@
         "S5"
       ]
     },
-    "H\u00f6flingen": {
+    "Höfingen": {
       "lines": [
         "S6",
         "S60"
@@ -121,7 +79,7 @@
         "S1"
       ]
     },
-    "G\u00e4rtringen": {
+    "Gärtringen": {
       "lines": [
         "S1"
       ]
@@ -143,7 +101,7 @@
         "S60"
       ]
     },
-    "B\u00f6blingen": {
+    "Böblingen": {
       "lines": [
         "S60",
         "S1"
@@ -154,7 +112,7 @@
         "S1"
       ]
     },
-    "Aspberg": {
+    "Asperg": {
       "lines": [
         "S5"
       ]
@@ -189,13 +147,13 @@
         "S5"
       ]
     },
-    "Neuwirtshaus (Porscheplatz)": {
+    "Neuwirtshaus": {
       "lines": [
         "S6",
         "S60"
       ]
     },
-    "Schwabstra\u00dfe": {
+    "Schwabstraße": {
       "lines": [
         "S1",
         "S2",
@@ -206,14 +164,14 @@
         "S60"
       ]
     },
-    "Universit\u00e4t": {
+    "Universität": {
       "lines": [
         "S1",
         "S2",
         "S3"
       ]
     },
-    "\u00d6sterfeld": {
+    "Österfeld": {
       "lines": [
         "S1",
         "S2",
@@ -288,7 +246,7 @@
         "S60"
       ]
     },
-    "Flughafen\/Messe": {
+    "Flughafen/Messe": {
       "lines": [
         "S2",
         "S3"
@@ -333,7 +291,7 @@
         "S4"
       ]
     },
-    "N\u00fcrnberger Stra\u00dfe": {
+    "Nürnberger Straße": {
       "lines": [
         "S2",
         "S3"
@@ -368,12 +326,12 @@
         "S3"
       ]
     },
-    "Untert\u00fcrkheim": {
+    "Untertürkheim": {
       "lines": [
         "S1"
       ]
     },
-    "Obert\u00fcrkheim": {
+    "Obertürkheim": {
       "lines": [
         "S1"
       ]
@@ -507,10 +465,10 @@
     },
     "Schorndorf": {
       "lines": [
-        "S1"
+        "S2"
       ]
     },
-    "\u00d6tlingen": {
+    "Ötlingen": {
       "lines": [
         "S1"
       ]
