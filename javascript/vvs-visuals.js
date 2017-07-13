@@ -1,4 +1,4 @@
-var width = window.innerWidth;
+var width = window.innerWidth - 20;
 var height = window.innerHeight - 100;
 var roundBy = 2;
 var relativeCoordinates = {};
@@ -61,7 +61,7 @@ function render(error, linecoord, apidata, stationlabels, pixel2station, coordin
     var keys = Object.keys(coordinates);
     var my_array = new Array();
     for (var i = 0; i < keys.length; i++) {
-      if (keys[i].endsWith("S6")) {
+      if (keys[i].endsWith("S2")) {
         my_array.push(keys[i]);
       }
     }
@@ -178,7 +178,7 @@ function draw(width, height, data) {
           return "translate(" + x(d.label) + ", " + y(d.label) + ")";
         })
         .on('mouseover', function() {
-          // this.parentElement.appendChild(this);
+          this.parentElement.appendChild(this);
           this.classList.add("hovered");
         })
         .on('mouseout', function() {
@@ -190,8 +190,9 @@ function draw(width, height, data) {
       //   .attr("y", function(d) { return "-" + (sizeScale(d.average_delay) / 2 + 5); })
       //   .text(function(d) { return d.label; });
 
-  d3.selectAll(".station")
-    .append("circle")
+  var station = d3.selectAll(".station");
+
+  station.append("circle")
     .attr("r", function(d) { return sizeScale(d.average_delay) / 2; })
     .attr("fill", colorRange)
     .attr("stroke", function(d) {
@@ -204,7 +205,27 @@ function draw(width, height, data) {
       } else {
         return "none";
       }
-    })
+    });
+
+  station.append("rect")
+    .attr("class", function(d) { return "delay-rect"; });
+
+  station.append("text")
+    .attr("class", function(d) { return "delay-info"; })
+    .attr("y", -15)
+    .text(function(d) {
+      if (d.average_delay) {
+        return "ø " + d.average_delay + "min";
+      } else {
+        return "no data";
+      }
+    });
+
+  d3.selectAll(".delay-rect")
+    .attr("x", function(d) { return this.parentNode.getBBox().x - 5; })
+    .attr("y", function(d) { return this.parentNode.getBBox().y - 5; })
+    .attr("width", function(d) { return this.parentNode.getBBox().width + 10; })
+    .attr("height", function(d) { return (this.parentNode.getBBox().height / 2) + 10; });
 
   // station.each(function(d) {
   //   var group = d3.select(this);
@@ -285,6 +306,9 @@ function drawMap(width, height, linecoordinates, stations) {
   var offsets_S6 = [
     "Weil der Stadt_S6", "Malmsheim_S6", "Renningen_S6", "Rutesheim_S6", "Leonberg_S6", "Höfingen_S6", "Ditzingen_S6", "Weilimdorf_S6", "Korntal_S6"
   ]
+  var offsets_S2 = [
+    "Waiblingen_S2", "Fellbach_S2", "Sommerrain_S2", "Nürnberger Straße_S2"
+  ]
   canvas.selectAll("text")
     .data(Object.keys(stations))
     .enter()
@@ -308,11 +332,15 @@ function drawMap(width, height, linecoordinates, stations) {
         if (offsets_S6.includes(coordKey)) {
           y_offset = 10;
         }
+        if (offsets_S2.includes(coordKey)) {
+          y_offset = 10;
+        }
         if (coordKey == "Neuwirtshaus_S6") {
-          x_offset = -100;
+          x_offset = -90;
+
         }
         var xPos = x(coordKey) + x_offset;
         var yPos = y(coordKey) + y_offset;
-        return "translate(" + (xPos + 10) + ", " + (yPos) + ")";
+        return "translate(" + (xPos + 8) + ", " + (yPos) + ")";
       })
 }
