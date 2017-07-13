@@ -1,4 +1,3 @@
 node_modules
 .DS_Store
-sample_api_result_v1_short.json
-sample_api_result_raw.json
+samples/
