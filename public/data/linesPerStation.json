@@ -1,0 +1,480 @@
+{
+  "Weil der Stadt": {
+    "lines": [
+      "S6"
+    ]
+  },
+  "Renningen": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Malmsheim": {
+    "lines": [
+      "S6"
+    ]
+  },
+  "Bietigheim-Bissingen": {
+    "lines": [
+      "S5"
+    ]
+  },
+  "Leonberg": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Rutesheim": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Renningen Süd": {
+    "lines": [
+      "S60"
+    ]
+  },
+  "Magstadt": {
+    "lines": [
+      "S60"
+    ]
+  },
+  "Nufringen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Herrenberg": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Tamm": {
+    "lines": [
+      "S5"
+    ]
+  },
+  "Höfingen": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Maichingen Nord": {
+    "lines": [
+      "S60"
+    ]
+  },
+  "Maichingen": {
+    "lines": [
+      "S60"
+    ]
+  },
+  "Ehningen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Gärtringen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Weilimdorf": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Ditzingen": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Sindelfingen": {
+    "lines": [
+      "S60"
+    ]
+  },
+  "Böblingen": {
+    "lines": [
+      "S60",
+      "S1"
+    ]
+  },
+  "Hulb": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Asperg": {
+    "lines": [
+      "S5"
+    ]
+  },
+  "Korntal": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Rohr": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "Goldberg": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Ludwigsburg": {
+    "lines": [
+      "S4",
+      "S5"
+    ]
+  },
+  "Kornwestheim": {
+    "lines": [
+      "S4",
+      "S5"
+    ]
+  },
+  "Neuwirtshaus": {
+    "lines": [
+      "S6",
+      "S60"
+    ]
+  },
+  "Schwabstraße": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Universität": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "Österfeld": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "Vaihingen": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "Oberaichen": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Leinfelden": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Echterdingen": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Favoritepark": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Zuffenhausen": {
+    "lines": [
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Feuerbach": {
+    "lines": [
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Stadtmitte": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Feuersee": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Flughafen/Messe": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Filderstadt": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Freiberg (N)": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Nordbahnhof": {
+    "lines": [
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Hauptbahnhof": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S60"
+    ]
+  },
+  "Benningen (N)": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Marbach (N)": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Nürnberger Straße": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Bad Cannstatt": {
+    "lines": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "Neckarpark": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Erdmannhausen": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Sommerrain": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Fellbach": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Untertürkheim": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Obertürkheim": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Mettingen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Kirchberg (M)": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Neustadt-Hohenacker": {
+    "lines": [
+      "S3"
+    ]
+  },
+  "Waiblingen": {
+    "lines": [
+      "S2",
+      "S3"
+    ]
+  },
+  "Rommelshausen": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Esslingen (N)": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Oberesslingen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Burgstall (M)": {
+    "lines": [
+      "S4"
+    ]
+  },
+  "Nellmersbach": {
+    "lines": [
+      "S3"
+    ]
+  },
+  "Winnenden": {
+    "lines": [
+      "S3"
+    ]
+  },
+  "Schwaikheim": {
+    "lines": [
+      "S3"
+    ]
+  },
+  "Stetten-Beinstein": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Endersbach": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Beutelsbach": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Zell": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Altbach": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Plochingen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Backnang": {
+    "lines": [
+      "S4",
+      "S3"
+    ]
+  },
+  "Maubach": {
+    "lines": [
+      "S3"
+    ]
+  },
+  "Grunbach": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Geradstetten": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Winterbach": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Wernau (N)": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Wendlingen (N)": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Weiler": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Schorndorf": {
+    "lines": [
+      "S2"
+    ]
+  },
+  "Ötlingen": {
+    "lines": [
+      "S1"
+    ]
+  },
+  "Kirchheim (T)": {
+    "lines": [
+      "S1"
+    ]
+  }
+}

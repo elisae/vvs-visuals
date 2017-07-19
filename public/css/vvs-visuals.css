@@ -41,29 +41,34 @@ body {
     margin-top: 100px;
 }
 
-.line-info {
-  font: 11px sans-serif;
+.delay-info {
+  font: 12px sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  fill: rgb(100, 100, 100);
+  text-anchor: middle;
+}
+
+.delay-rect {
+  opacity: 0;
+  fill: white;
+  stroke-width: 2px;
+  stroke: rgb(255, 102, 0); /* VVS-orange */
+  pointer-events: none;
+  rx: 5px;
+  ry: 5px;
 }
 
 .station-name {
-  font: 13px sans-serif;
+  font: 12px sans-serif;
+  fill: rgb(100, 100, 100);
 }
 
-.station-name, .line-info {
-  /*display: none;*/
-  fill: #4f4f4f;
-}
-
-/*.station {
-  opacity: 0.5;
-}
-
-.station.hovered {
+.station.hovered .delay-info, .station.hovered .delay-rect {
   opacity: 1;
-}*/
+}
 
 .station.hovered .station-name {
   display: block;
   pointer-events: none;
-  z-index: 1000;
 }
