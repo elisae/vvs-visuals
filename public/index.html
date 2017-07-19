@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="text/javascript" src="javascript/d3.min.js"></script>
-	  <script type="text/javascript" src="javascript/form.js"></script>
-		<script type="text/javascript" src="javascript/vvs-visuals.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/vvs-visuals.css">
+        <script type="text/javascript" src="javascript/d3.min.js"></script>
+        <script type="text/javascript" src="javascript/form.js"></script>
+        <script type="text/javascript" src="javascript/vvs-visuals.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/vvs-visuals.css"/>
 	</head>
 	<body>
-		<svg class="canvas">
+        <svg id="drawArea" class="canvas">
 			<g class="map"></g>
 			<g class="delays"></g>
 		</svg>
-
-		<form>
-      Show average data from (GMT+2): </br>
-      Start
-      <input id="startDateField" type="date" name="startDate">
-      <input id="startHoursField"  type="time" name="startHours">
-      </br>
-      End
-      <input id="endDateField" type="date" name="endDate">
-      <input id="endHoursField" type="time" name="endHours">
-      <input type="button" value="Update" onClick="update();">
-    </form>
+		<form id="dateRangeSelection">
+            <span>Show average delay data from (GMT+2):</span>
+            <input id="startDateField" class="dateSelectInput" type="date" name="startDate">
+            <input id="startHoursField" class="dateSelectInput"  type="time" name="startHours">
+            to
+            <input id="endDateField" class="dateSelectInput" type="date" name="endDate">
+            <input id="endHoursField" class="dateSelectInput" type="time" name="endHours">
+            <!--<input id="dateRangeUpdateButton" type="button" value="Update" onClick="update();">-->
+        </form>
 	</body>
 </html>

@@ -1,5 +1,5 @@
-var width = window.innerWidth;
-var height = window.innerHeight - 100;
+var width = window.innerWidth - 50;
+var height =  window.innerHeight - 110;
 var roundBy = 2;
 var relativeCoordinates = {};
 
@@ -37,7 +37,7 @@ var color = function(line) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  update();
+    update();
 });
 
 function updateSVG(startTime, endTime) {

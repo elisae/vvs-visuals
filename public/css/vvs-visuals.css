@@ -1,3 +1,46 @@
+body {
+    margin: 0px;
+    font-family: Calibri, sans-serif;
+}
+
+#dateRangeUpdateButton {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 7px 15px;
+    cursor: pointer;
+}
+
+#dateRangeSelection {
+  position: absolute;
+  background: #002b2f;
+  padding: 10px 30px;
+  width: calc(100% - 60px);
+  color: white;
+  top: 0px;
+  left: 0px;
+}
+
+#dateRangeSelection > span{
+    display: block;
+    padding: 5px 0px 10px 0px;
+}
+
+.dateSelectInput {
+    background: white;
+    color: #002b2f;
+    padding: 5px 15px;
+    margin: 0px;
+    border: 0px;
+}
+
+#drawArea {
+    width: calc(100% - 20px);
+    height: calc(100% - 150px);
+    padding: 0px 10px;
+    margin-top: 100px;
+}
+
 .line-info {
   font: 11px sans-serif;
 }
@@ -22,4 +65,5 @@
 .station.hovered .station-name {
   display: block;
   pointer-events: none;
+  z-index: 1000;
 }
