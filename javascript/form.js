@@ -29,7 +29,7 @@ function toTimestamp(dateString, hourString) {
   return date.getTime();
 }
 
-function update() {
+function getTimeframe() {
   var startTime = toTimestamp(
     document.getElementById("startDateField").value,
     document.getElementById("startHoursField").value);
@@ -37,5 +37,8 @@ function update() {
     document.getElementById("endDateField").value,
     document.getElementById("endHoursField").value);
 
-  updateSVG(startTime, endTime);
+  return {
+    startTime: startTime,
+    endTime: endTime
+  };
 }

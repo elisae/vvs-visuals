@@ -1,88 +1,86 @@
-var width = window.innerWidth - 50;
-var height =  window.innerHeight - 110;
-var roundBy = 2;
-var relativeCoordinates = {};
+// *** DATA STUFF ***
+// --- Constants ---
+var relativeCoordinates;
+var linepoints;
+var linesPerStation;
+var idToStation;
 
-var x = function(stationLabel) {
-  var data = relativeCoordinates[stationLabel]
-  if (!data) {
-    // console.log("No coordinates found for " + stationLabel);
-    return -100;
+// --- Helpers ---
+function getAverage(array) {
+  if (array.length == 0) {
+    return 0;
   }
-  var rel_x = Math.round(data["x"] * width * roundBy) / roundBy; // 0-1
-  return rel_x;
-}
-
-var y = function(stationLabel) {
-  var data = relativeCoordinates[stationLabel]
-  if (!data) {
-    // console.log("No coordinates found for " + stationLabel);
-    return -100;
+  var sum = 0;
+  for (var i = 0; i < array.length; i++) {
+    sum += parseInt(array[i], 10);
   }
-  var rel_y = Math.round(data["y"] * height * roundBy) / roundBy; // 0-1
-  return rel_y;
+  return Math.round((sum/array.length) * 10) / 10;
 }
 
-var color = function(line) {
-  var colors = {
-    "S1": "#60a92c",
-    "S2": "#e3051b",
-    "S3": "#ef7d00",
-    "S4": "#005da9",
-    "S5": "#009ed4",
-    "S6": "#875300",
-    "S60": "#969200"
-  };
-  return colors[line];
-}
-
+// --- Action ---
 document.addEventListener("DOMContentLoaded", function() {
-    update();
+  loadJSONData();
+  updateSVG(getTimeframe());
 });
 
-function updateSVG(startTime, endTime) {
-  console.log("Requesting data from " + startTime + " until " + endTime);
+function loadJSONData() {
+  console.log("Loading JSON data");
   d3.queue()
-    .defer(d3.json, "data/linecoordinates.json")
-    .defer(d3.json, "https://vvs-delay-api.eu-de.mybluemix.net/db/entries?startTime=" + startTime + "&endTime=" + endTime + "&transform=true")
-    .defer(d3.json, "data/stationlabels.json")
-    .defer(d3.json, "data/pixel2station.json")
-    .defer(d3.json, "data/new_coordinates.json")
-    .defer(d3.json, "data/lines.json")
-    .await(render);
+    .defer(d3.json, "data/linepoints.json")
+    .defer(d3.json, "data/idToStation.json")
+    .defer(d3.json, "data/relativeCoordinates.json")
+    .defer(d3.json, "data/linesPerStation.json")
+    .await(function(error, lpts, id2s, relCoor, lps) {
+      linepoints = lpts;
+      idToStation = id2s;
+      relativeCoordinates = relCoor;
+      linesPerStation = lps;
+      drawMap();
+    });
 }
 
-function render(error, linecoord, apidata, stationlabels, pixel2station, coordinates, lines) {
-  if (error) {
-    console.log(error);
-  } else {
-
-    relativeCoordinates = coordinates;
-    var keys = Object.keys(coordinates);
-    var my_array = new Array();
-    for (var i = 0; i < keys.length; i++) {
-      if (keys[i].endsWith("S6")) {
-        my_array.push(keys[i]);
+function updateSVG(timeframe) {
+  var startTime = timeframe.startTime;
+  var endTime = timeframe.endTime;
+  console.log("Requesting API data from " + startTime + " until " + endTime);
+  d3.json(
+    "https://vvs-delay-api.eu-de.mybluemix.net/db/entries?startTime=" + startTime + "&endTime=" + endTime + "&transform=true",
+    function(error, apiData) {
+      if (error) {
+        console.log(error);
+        alert("Something went wrong while loading API data. Please try again later.");
+        return;
+      } else {
+        // wait for JSON data to be loaded
+        var retries = 0;
+        while (retries < 10) {
+          if (!(idToStation && linepoints
+            && linesPerStation && relativeCoordinates)) {
+              setTimeout(function() {
+                retries++;
+              }, 100);
+          } else {
+            var drawingData = transform(apiData);
+            draw(drawingData);
+            return;
+          }
+        }
+        alert("Something went wrong while loading JSON data. Please contact developer.");
       }
-    }
-    console.log(my_array);
-    var delayArrays = getDelayArrays(apidata.docs, stationlabels);
-    var data = mergeData(lines.stationLines, delayArrays);
-
-    d3.select(".canvas")
-      .attr("width", width)
-      .attr("height", height);
-
-    drawMap(width, height, linecoord, lines.stationLines);
-    draw(width, height, data);
-  }
+    });
 }
 
-function getDelayArrays(data, stationlabels) {
+function transform(apidata) {
+  var delayArrays = getDelayArrays(apidata.docs, idToStation);
+  var data = mergeData(linesPerStation, delayArrays);
+  return data;
+}
+
+function getDelayArrays(data, idToStation) {
   var result = {};
   data.forEach(function(doc) {
     doc.data.forEach(function(d) {
-      var label = stationlabels[d.station];
+      var label = idToStation[d.station];
       if (!result[label]) {
         result[label] = {};
       }
@@ -100,17 +98,6 @@ function getDelayArrays(data, stationlabels) {
     });
   });
   return result;
-}
-
-function getAverage(array) {
-  if (array.length == 0) {
-    return 0;
-  }
-  var sum = 0;
-  for (var i = 0; i < array.length; i++) {
-    sum += parseInt(array[i], 10);
-  }
-  return Math.round((sum/array.length) * 10) / 10;
 }
 
 function mergeData(stations, delayArrays) {
@@ -138,7 +125,52 @@ function mergeData(stations, delayArrays) {
   return result;
 }
 
-function draw(width, height, data) {
+
+// *** SVG STUFF ***
+// --- Constants ---
+var width = window.innerWidth - 20;
+var height = window.innerHeight - 100;
+var roundBy = 2;
+// adjust coordinates so as to fit perfectly on screen
+var relativeOffsets = {
+  x: -0.027,
+  y: -0.0
+}
+
+function color(line) {
+  var colors = {
+    "S1": "#60a92c",
+    "S2": "#e3051b",
+    "S3": "#ef7d00",
+    "S4": "#005da9",
+    "S5": "#009ed4",
+    "S6": "#875300",
+    "S60": "#969200"
+  };
+  return colors[line];
+}
+
+// --- Helpers ---
+function x(stationLabel) {
+  return calcAbsCoord(stationLabel, "x", width);
+}
+function y(stationLabel) {
+  return calcAbsCoord(stationLabel, "y", height);
+}
+function calcAbsCoord(label, x_or_y, totalSize) {
+  var relPos = relativeCoordinates[label];
+  if (!relPos) {
+    // console.log("No coordinates found for " + stationLabel);
+    return -100;
+  }
+  var coord = relPos[x_or_y] + relativeOffsets[x_or_y];
+  var absCoord = Math.round(coord * totalSize * roundBy) / roundBy; // 0-1
+  return absCoord;
+}
+
+// --- Action ---
+function draw(data) {
+  console.log("Drawing delays");
   var minCircleSize = 5;
   var maxCircleSize = 50;
   var sizeScale = function(minutes) {
@@ -166,8 +198,7 @@ function draw(width, height, data) {
 
   var canvas = d3.select(".delays");
   canvas.selectAll("g").remove(); // clear old. no way around this^^
-  console.log("data length");
-  console.log(data.length);
+
   var station = canvas.selectAll("g")
     .data(data)
     .enter()
@@ -178,20 +209,16 @@ function draw(width, height, data) {
           return "translate(" + x(d.label) + ", " + y(d.label) + ")";
         })
         .on('mouseover', function() {
-          // this.parentElement.appendChild(this);
+          this.parentElement.appendChild(this);
           this.classList.add("hovered");
         })
         .on('mouseout', function() {
           this.classList.remove("hovered");
         });
-      // .append("text")
-      //   .attr("class", "station-name")
-      //   .attr("text-anchor", "middle")
-      //   .attr("y", function(d) { return "-" + (sizeScale(d.average_delay) / 2 + 5); })
-      //   .text(function(d) { return d.label; });
 
-  d3.selectAll(".station")
-    .append("circle")
+  var station = d3.selectAll(".station");
+
+  station.append("circle")
     .attr("r", function(d) { return sizeScale(d.average_delay) / 2; })
     .attr("fill", colorRange)
     .attr("stroke", function(d) {
@@ -204,72 +231,46 @@ function draw(width, height, data) {
       } else {
         return "none";
       }
-    })
+    });
 
-  // station.each(function(d) {
-  //   var group = d3.select(this);
-  //
-  //   var text = group.append("g")
-  //     .attr("name", "texts")
-  //     .selectAll("text")
-  //     .data(d.delays);
-  //   text.exit()
-  //     .remove();
-  //   text.enter()
-  //     .append("text")
-  //     .attr("text-anchor", "middle")
-  //     .attr("x", function() {
-  //       return sWidth(d3.select(this.parentNode).datum().delays.length)/2;
-  //     })
-  //     .attr("y", maxBarHeight + 10)
-  //     .attr("class", function(d) { return "hidden line-info " + d.line; })
-  //     .text(function(d) {
-  //       return d.line + ": ø " + d.delay + "min delay";
-  //     });
-  //
-  //   var rect = group.append("g")
-  //     .attr("name", "rects")
-  //     .selectAll("rect")
-  //     .data(d.delays);
-  //   rect.exit()
-  //     .remove();
-  //   rect.enter()
-  //     .insert("rect", ":first-child")
-  //     .attr("class", "bar")
-  //     .attr("line", function(d) { return d.line; })
-  //     .on('mouseover', function(d) {
-  //       this.parentElement.appendChild(this);
-  //       d3.select(this.parentElement.parentElement)
-  //         .selectAll(".line-info." + d.line)
-  //         .style("display", "block");
-  //     })
-  //     .on('mouseout', function(d) {
-  //       d3.select(this.parentElement.parentElement)
-  //         .selectAll(".line-info." + d.line)
-  //         .style("display", "none");
-  //     })
-  //     .attr("width", squareSize)
-  //     .attr("height", function(d) { return heightScale(d.delay); })
-  //     .attr("fill", function(d) { return color(d.line); })
-  //     .attr("transform", function(d, i) {
-  //       return "translate(" + (i * overlap * squareSize) + ", 0)";
-  //     });
-  //
+  station.append("rect")
+    .attr("class", function(d) { return "delay-rect"; });
 
-  // })
+  station.append("text")
+    .attr("class", function(d) { return "delay-info"; })
+    .attr("y", -15)
+    .text(function(d) {
+      if (d.average_delay) {
+        return "ø " + d.average_delay + "min";
+      } else {
+        return "no data";
+      }
+    });
+
+  d3.selectAll(".delay-rect")
+    .attr("x", function(d) { return this.parentNode.getBBox().x - 5; })
+    .attr("y", function(d) { return this.parentNode.getBBox().y - 5; })
+    .attr("width", function(d) { return this.parentNode.getBBox().width + 10; })
+    .attr("height", function(d) { return (this.parentNode.getBBox().height / 2) + 10; });
 }
 
-function drawMap(width, height, linecoordinates, stations) {
-  var canvas = d3.select(".map")
+function drawMap() {
+  console.log("Drawing Map");
+
+  d3.select(".canvas")
     .attr("width", width)
     .attr("height", height);
+
+  var canvas = d3.select(".map")
+    // .attr("width", width)
+    // .attr("height", height);
 
   var line = d3.line()
     .x(function(d) { return x(d); })
     .y(function(d) { return y(d); });
 
   canvas.selectAll("path")
-    .data(linecoordinates)
+    .data(linepoints)
     .enter()
       .append("path")
       .attr("class", "line")
@@ -277,42 +278,55 @@ function drawMap(width, height, linecoordinates, stations) {
       .attr("fill", "none")
       .attr("stroke", function(d) { return color(d.line); });
 
-  console.log("drawMap");
-  console.log(stations);
+  // at these stations default offset looks crooked
   var offsets_S1 = [
     "Herrenberg_S1", "Nufringen_S1", "Gärtringen_S1", "Ehningen_S1", "Hulb_S1", "Böblingen_S1", "Goldberg_S1", "Rohr_S1", "Vaihingen_S1", "Österfeld_S1", "Universität_S1", "Schwabstraße_S1", "Feuersee_S1", "Stadtmitte_S1", "Hauptbahnhof_S1", "Bad Cannstatt_S1"
   ]
   var offsets_S6 = [
     "Weil der Stadt_S6", "Malmsheim_S6", "Renningen_S6", "Rutesheim_S6", "Leonberg_S6", "Höfingen_S6", "Ditzingen_S6", "Weilimdorf_S6", "Korntal_S6"
   ]
+  var offsets_S2 = [
+    "Waiblingen_S2", "Fellbach_S2", "Sommerrain_S2", "Nürnberger Straße_S2"
+  ]
+
   canvas.selectAll("text")
-    .data(Object.keys(stations))
+    .data(Object.keys(linesPerStation))
     .enter()
       .append("text")
       .text(function(d) { return d; })
       .attr("class", "station-name")
       .attr("transform", function(d) {
-        var line = stations[d].lines[0];
+        var line = linesPerStation[d].lines[0]; // pick any line point to label
+
+        // except for these stations (optical reasons)
         if (d == "Böblingen") {
           line = "S1";
         }
         if (d == "Backnang") {
           line = "S3";
         }
+
         var coordKey = d + "_" + line;
         var x_offset = 0;
         var y_offset = 0;
+
+        // fix crooked label for these stations
         if (offsets_S1.includes(coordKey)) {
           y_offset = 10;
         }
         if (offsets_S6.includes(coordKey)) {
           y_offset = 10;
         }
-        if (coordKey == "Neuwirtshaus_S6") {
-          x_offset = -100;
+        if (offsets_S2.includes(coordKey)) {
+          y_offset = 10;
         }
+        if (coordKey == "Neuwirtshaus_S6") {
+          x_offset = -90;
+
+        }
+
         var xPos = x(coordKey) + x_offset;
         var yPos = y(coordKey) + y_offset;
-        return "translate(" + (xPos + 10) + ", " + (yPos) + ")";
+        return "translate(" + (xPos + 8) + ", " + (yPos) + ")";
       })
 }
