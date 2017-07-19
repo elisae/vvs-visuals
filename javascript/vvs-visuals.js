@@ -160,7 +160,7 @@ function y(stationLabel) {
 function calcAbsCoord(label, x_or_y, totalSize) {
   var relPos = relativeCoordinates[label];
   if (!relPos) {
-    // console.log("No coordinates found for " + stationLabel);
+    // console.log("No coordinates found for " + label);
     return -100;
   }
   var coord = relPos[x_or_y] + relativeOffsets[x_or_y];
@@ -262,8 +262,6 @@ function drawMap() {
     .attr("height", height);
 
   var canvas = d3.select(".map")
-    // .attr("width", width)
-    // .attr("height", height);
 
   var line = d3.line()
     .x(function(d) { return x(d); })
@@ -289,7 +287,7 @@ function drawMap() {
     "Waiblingen_S2", "Fellbach_S2", "Sommerrain_S2", "Nürnberger Straße_S2"
   ]
 
-  canvas.selectAll("text")
+  canvas.selectAll("text.station-name")
     .data(Object.keys(linesPerStation))
     .enter()
       .append("text")
@@ -322,11 +320,54 @@ function drawMap() {
         }
         if (coordKey == "Neuwirtshaus_S6") {
           x_offset = -90;
-
         }
 
         var xPos = x(coordKey) + x_offset;
         var yPos = y(coordKey) + y_offset;
         return "translate(" + (xPos + 8) + ", " + (yPos) + ")";
-      })
+      });
+
+  function endstationCoord(label) {
+    var groupAbove = [
+      "Marbach (N)_S4", "Bietigheim-Bissingen_S5", "Weil der Stadt_S6", "Herrenberg_S1", "Backnang_S3"
+    ]
+    var xPos = x(label);
+    var yPos = y(label);
+    if (groupAbove.includes(label)) {
+      xPos -= 10;
+      yPos -= 10;
+    } else {
+      xPos -= 20;
+      yPos += 10;
+    }
+    return {
+      x: xPos,
+      y: yPos
+    }
+  }
+  var endstationData = new Array();
+
+  for (var i = 0; i < linepoints.length; i++) {
+    var first = linepoints[i].points[0];
+    var last = linepoints[i].points[linepoints[i].points.length - 1];
+    var line = linepoints[i].line;
+    endstationData.push({
+      label: line,
+      coord: endstationCoord(first)
+    });
+    endstationData.push({
+      label: line,
+      coord: endstationCoord(last)
+    });
+  }
+
+  canvas.selectAll("text.endstation")
+    .data(endstationData).enter()
+    .append("text")
+      .text(function(d) { return d.label; })
+      .attr("class", "endstation")
+      .attr("fill", function(d) { return color(d.label); })
+      .attr("transform", function(d) {
+        return "translate(" + d.coord.x + ", " + d.coord.y + ")"; }
+      );
 }

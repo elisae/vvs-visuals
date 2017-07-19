@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   var now = new Date();
-  // default: show data from the last two hours
+  // default: show data from the last four hours
   document.getElementById("endDateField").value = toInputTypeDate(now);
   document.getElementById("endHoursField").value = toInputTypeTime(now);
   now.setHours(now.getHours() - 4);
