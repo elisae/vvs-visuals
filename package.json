@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/elisae/vvs-visuals#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "cfenv": "1.0.x",
     "cloudant": "^1.7.1",
     "express": "^4.15.2",

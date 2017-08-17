@@ -17,6 +17,13 @@ function getAverage(array) {
   return Math.round((sum/array.length) * 10) / 10;
 }
 
+function writeToServer(data, filename) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/data?filename=" + filename, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify(data));
+}
+
 // --- Action ---
 document.addEventListener("DOMContentLoaded", function() {
   loadJSONData();
@@ -61,6 +68,7 @@ function updateSVG(timeframe) {
               }, 100);
           } else {
             var drawingData = transform(apiData);
+            // writeToServer(drawingData, "drawingData");
             draw(drawingData);
             return;
           }
@@ -72,6 +80,7 @@ function updateSVG(timeframe) {
 
 function transform(apidata) {
   var delayArrays = getDelayArrays(apidata.docs, idToStation);
+  // writeToServer(delayArrays, "delayArrays");
   var data = mergeData(linesPerStation, delayArrays);
   return data;
 }
